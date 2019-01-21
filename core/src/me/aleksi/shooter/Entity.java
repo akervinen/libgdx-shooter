@@ -1,25 +1,33 @@
 package me.aleksi.shooter;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 abstract class Entity {
-    private float x;
-    private float y;
+    private Rectangle rect = new Rectangle();
 
-    public float getX() {
-        return x;
+    public Rectangle getRect() {
+        return rect;
     }
 
-    public void setX(float x) {
-        this.x = x;
+    public float getX() {
+        return rect.x;
     }
 
     public float getY() {
-        return y;
+        return rect.y;
     }
 
-    public void setY(float y) {
-        this.y = y;
+    public void setPos(float x, float y) {
+        rect.setPosition(x, y);
+    }
+
+    public void moveX(float x) {
+        rect.x += x;
+    }
+
+    public void moveY(float y) {
+        rect.y += y;
     }
 
     public abstract void draw(SpriteBatch batch);

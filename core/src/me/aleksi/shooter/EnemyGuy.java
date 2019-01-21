@@ -11,6 +11,7 @@ final class EnemyGuy extends Entity {
 
     EnemyGuy(AssetManager assets) {
         texture = assets.get(TEXTURE_FILE, Texture.class);
+        getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
     }
 
     static void loadAssets(AssetManager assets) {
@@ -19,7 +20,7 @@ final class EnemyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, getX(), getY(), 1.0f, (float) texture.getHeight() / texture.getWidth());
+        batch.draw(texture, getX(), getY(), getRect().getWidth(), getRect().getHeight());
     }
 
     @Override

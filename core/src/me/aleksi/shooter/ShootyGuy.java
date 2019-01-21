@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 final class ShootyGuy extends Entity {
     private static final float MOVE_SPEED = 2.0f;
     private static final String TEXTURE_FILE = "thonk.png";
+
     private Texture texture;
+
     private boolean movingUp = false;
     private boolean movingDown = false;
     private boolean movingLeft = false;
@@ -15,6 +17,7 @@ final class ShootyGuy extends Entity {
 
     ShootyGuy(AssetManager assets) {
         texture = assets.get(TEXTURE_FILE, Texture.class);
+        getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
     }
 
     static void loadAssets(AssetManager assets) {
@@ -23,22 +26,22 @@ final class ShootyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, getX(), getY(), 1.0f, (float) texture.getHeight() / texture.getWidth());
+        batch.draw(texture, getX(), getY(), getRect().getWidth(), getRect().getHeight());
     }
 
     @Override
     public void update(float deltaTime) {
         if (isMovingUp()) {
-            setY(getY() + MOVE_SPEED * deltaTime);
+            moveY(MOVE_SPEED * deltaTime);
         }
         if (isMovingDown()) {
-            setY(getY() - MOVE_SPEED * deltaTime);
+            moveY(-MOVE_SPEED * deltaTime);
         }
         if (isMovingLeft()) {
-            setX(getX() - MOVE_SPEED * deltaTime);
+            moveX(-MOVE_SPEED * deltaTime);
         }
         if (isMovingRight()) {
-            setX(getX() + MOVE_SPEED * deltaTime);
+            moveX(MOVE_SPEED * deltaTime);
         }
     }
 

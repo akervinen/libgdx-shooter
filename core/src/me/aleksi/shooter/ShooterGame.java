@@ -51,7 +51,7 @@ public class ShooterGame implements ApplicationListener {
         batch = new SpriteBatch();
 
         playerGuy = new ShootyGuy(assets);
-        playerGuy.setX(1.5f);
+        playerGuy.setPos(1.5f, 0f);
 
         input = new ShootyGuyInput(playerGuy);
         Gdx.input.setInputProcessor(input);

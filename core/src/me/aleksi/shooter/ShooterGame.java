@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
+
 public class ShooterGame implements ApplicationListener {
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
@@ -19,7 +21,9 @@ public class ShooterGame implements ApplicationListener {
 
     private SpriteBatch batch;
 
+    private ShootyGuyInput input;
     private ShootyGuy playerGuy;
+    private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
 
     private float getWorldWidth() {
         return gameViewport.getWorldWidth();
@@ -47,6 +51,12 @@ public class ShooterGame implements ApplicationListener {
         batch = new SpriteBatch();
 
         playerGuy = new ShootyGuy(assets);
+        playerGuy.setX(1.5f);
+
+        input = new ShootyGuyInput(playerGuy);
+        Gdx.input.setInputProcessor(input);
+
+        enemyGuys.add(new EnemyGuy(assets));
     }
 
     @Override
@@ -58,6 +68,11 @@ public class ShooterGame implements ApplicationListener {
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
 
+        playerGuy.update(delta);
+        for (EnemyGuy e : enemyGuys) {
+            e.update(delta);
+        }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -67,6 +82,9 @@ public class ShooterGame implements ApplicationListener {
 
         batch.begin();
         playerGuy.draw(batch);
+        for (EnemyGuy e : enemyGuys) {
+            e.draw(batch);
+        }
         batch.end();
     }
 

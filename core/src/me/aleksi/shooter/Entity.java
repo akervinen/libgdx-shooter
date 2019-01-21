@@ -33,4 +33,8 @@ abstract class Entity {
     public abstract void draw(SpriteBatch batch);
 
     public abstract void update(float deltaTime);
+
+    public boolean collides(Entity e) {
+        return this.getRect().overlaps(e.getRect());
+    }
 }

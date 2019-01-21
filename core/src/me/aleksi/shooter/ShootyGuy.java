@@ -1,5 +1,6 @@
 package me.aleksi.shooter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -43,6 +44,10 @@ final class ShootyGuy extends Entity {
         if (isMovingRight()) {
             moveX(MOVE_SPEED * deltaTime);
         }
+    }
+
+    public void onCollision(Entity e) {
+        Gdx.app.log("GSG", "crash");
     }
 
     public boolean isMovingUp() {

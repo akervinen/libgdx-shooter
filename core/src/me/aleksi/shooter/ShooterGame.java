@@ -60,18 +60,8 @@ public class ShooterGame implements ApplicationListener {
     }
 
     @Override
-    public void resize(int width, int height) {
-        gameViewport.update(width, height);
-    }
-
-    @Override
     public void render() {
-        float delta = Gdx.graphics.getDeltaTime();
-
-        playerGuy.update(delta);
-        for (EnemyGuy e : enemyGuys) {
-            e.update(delta);
-        }
+        update();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -86,6 +76,30 @@ public class ShooterGame implements ApplicationListener {
             e.draw(batch);
         }
         batch.end();
+    }
+
+    private void update() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        playerGuy.update(delta);
+        for (EnemyGuy e : enemyGuys) {
+            e.update(delta);
+        }
+
+        checkCollisions();
+    }
+
+    private void checkCollisions() {
+        for (EnemyGuy e : enemyGuys) {
+            if (playerGuy.collides(e)) {
+                playerGuy.onCollision(e);
+            }
+        }
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        gameViewport.update(width, height);
     }
 
     @Override

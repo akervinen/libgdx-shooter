@@ -4,7 +4,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 abstract class Entity {
+    private ShooterGame game;
     private Rectangle rect = new Rectangle();
+
+    Entity(ShooterGame game) {
+        this.game = game;
+    }
+
+    public ShooterGame getGame() {
+        return game;
+    }
 
     public Rectangle getRect() {
         return rect;

@@ -16,8 +16,9 @@ final class ShootyGuy extends Entity {
     private boolean movingLeft = false;
     private boolean movingRight = false;
 
-    ShootyGuy(AssetManager assets) {
-        texture = assets.get(TEXTURE_FILE, Texture.class);
+    ShootyGuy(ShooterGame game) {
+        super(game);
+        texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
         getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
     }
 

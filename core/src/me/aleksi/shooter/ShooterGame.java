@@ -12,24 +12,34 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 
 public class ShooterGame implements ApplicationListener {
+    // Some constants
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
 
+    // Graphics related
     private AssetManager assets;
 
     private Viewport gameViewport;
-
     private SpriteBatch batch;
 
+    // Gameplay related
     private ShootyGuyInput input;
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
 
-    private float getWorldWidth() {
+    AssetManager getAssets() {
+        return assets;
+    }
+
+    public Viewport getGameViewport() {
+        return gameViewport;
+    }
+
+    public float getWorldWidth() {
         return gameViewport.getWorldWidth();
     }
 
-    private float getWorldHeight() {
+    public float getWorldHeight() {
         return gameViewport.getWorldHeight();
     }
 
@@ -50,13 +60,13 @@ public class ShooterGame implements ApplicationListener {
 
         batch = new SpriteBatch();
 
-        playerGuy = new ShootyGuy(assets);
+        playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 0f);
 
         input = new ShootyGuyInput(playerGuy);
         Gdx.input.setInputProcessor(input);
 
-        enemyGuys.add(new EnemyGuy(assets));
+        enemyGuys.add(new EnemyGuy(this));
     }
 
     @Override

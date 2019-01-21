@@ -19,7 +19,7 @@ final class EnemyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, 0, 0, 1, 1);
+        batch.draw(texture, getX(), getY(), 1.0f, (float) texture.getHeight() / texture.getWidth());
     }
 
     @Override

@@ -17,6 +17,7 @@ final class EnemyGuy extends Entity {
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
         getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
 
+        // Set speed and direction by random
         speedX = (float) (Math.random() * MAX_SPEED - MAX_SPEED / 2);
         speedY = (float) (Math.random() * MAX_SPEED - MAX_SPEED / 2);
     }
@@ -37,12 +38,14 @@ final class EnemyGuy extends Entity {
         float w = getRect().getWidth();
         float h = getRect().getHeight();
 
+        // Check if we've hit a wall, reverse if we have
         if (x < 0 || (x + w) > getGame().getWorldWidth()) {
             speedX *= -1;
         }
         if (y < 0 || (y + h) > getGame().getWorldHeight()) {
             speedY *= -1;
         }
+
         moveX(deltaTime * speedX);
         moveY(deltaTime * speedY);
     }

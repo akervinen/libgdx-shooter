@@ -45,6 +45,7 @@ public class ShooterGame implements ApplicationListener {
 
     @Override
     public void create() {
+        // Load all assets
         assets = new AssetManager();
 
         ShootyGuy.loadAssets(assets);
@@ -60,26 +61,31 @@ public class ShooterGame implements ApplicationListener {
 
         batch = new SpriteBatch();
 
+        // Create our player ship/character and input handler
+
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 0f);
 
         input = new ShootyGuyInput(playerGuy);
         Gdx.input.setInputProcessor(input);
 
+        // Add a lone enemy for now
         enemyGuys.add(new EnemyGuy(this));
     }
 
     @Override
     public void render() {
+        // Do all entity logic first
         update();
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        // Camera and projection setup
         gameViewport.apply();
-
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
 
+        // Draw everything
         batch.begin();
         playerGuy.draw(batch);
         for (EnemyGuy e : enemyGuys) {

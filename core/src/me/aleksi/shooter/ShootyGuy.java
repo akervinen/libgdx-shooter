@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 final class ShootyGuy extends Entity {
-    private static final float MOVE_SPEED = 2.0f;
     private static final String TEXTURE_FILE = "thonk.png";
+    private static final float MOVE_SPEED = 2.0f;
 
     private Texture texture;
 
@@ -47,7 +47,7 @@ final class ShootyGuy extends Entity {
         }
     }
 
-    public void onCollision(Entity e) {
+    public void onCollision(EnemyGuy e) {
         Gdx.app.log("GSG", "crash");
     }
 

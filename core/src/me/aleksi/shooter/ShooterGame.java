@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -70,14 +71,23 @@ public class ShooterGame implements ApplicationListener {
         input = new ShootyGuyInput(playerGuy);
         Gdx.input.setInputProcessor(input);
 
-        // Add a lone enemy for now
-        addEnemyGuy();
+        // Add enemies
+        for (int i = 0; i < 3; i++) {
+            addEnemyGuy();
+        }
     }
 
     public void addEnemyGuy() {
         EnemyGuy e = new EnemyGuy(this);
-        e.setPos(MathUtils.random(getWorldWidth() - 1.0f),
-                MathUtils.random(getWorldHeight() - 1.0f));
+
+        // Pick random positions until we get one at least 4 units away from the player
+        float x, y;
+        do {
+            x = MathUtils.random(getWorldWidth() - 1.0f);
+            y = MathUtils.random(getWorldHeight() - 1.0f);
+        } while (Vector2.dst2(x, y, playerGuy.getX(), playerGuy.getY()) < 16f);
+
+        e.setPos(x, y);
         enemyGuys.add(e);
     }
 

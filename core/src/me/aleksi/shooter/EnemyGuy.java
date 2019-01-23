@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 final class EnemyGuy extends Entity {
     private static final String TEXTURE_FILE = "ghost.png";
-    private static final float MOVE_SPEED = 10.0f;
+    private static final float MIN_SPEED = 3f;
+    private static final float MAX_SPEED = 6f;
 
     private Texture texture;
 
@@ -22,7 +23,7 @@ final class EnemyGuy extends Entity {
         // Set  direction by random
         speed = new Vector2(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f));
         speed.nor();
-        speed.scl(MOVE_SPEED);
+        speed.scl(MathUtils.random(MIN_SPEED, MAX_SPEED));
     }
 
     static void loadAssets(AssetManager assets) {

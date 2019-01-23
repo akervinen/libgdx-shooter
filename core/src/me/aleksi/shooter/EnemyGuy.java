@@ -13,6 +13,7 @@ final class EnemyGuy extends Entity {
 
     private Texture texture;
 
+    private boolean dead;
     private Vector2 speed;
 
     EnemyGuy(ShooterGame game) {
@@ -24,6 +25,14 @@ final class EnemyGuy extends Entity {
         speed = new Vector2(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f));
         speed.nor();
         speed.scl(MathUtils.random(MIN_SPEED, MAX_SPEED));
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
     }
 
     static void loadAssets(AssetManager assets) {

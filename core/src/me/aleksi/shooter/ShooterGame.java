@@ -19,6 +19,7 @@ public class ShooterGame implements ApplicationListener {
     // Some constants
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
+    private static final int ENEMY_COUNT = 3;
 
     // Graphics related
     private AssetManager assets;
@@ -80,7 +81,7 @@ public class ShooterGame implements ApplicationListener {
         Gdx.input.setInputProcessor(input);
 
         // Add enemies
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < ENEMY_COUNT; i++) {
             addEnemyGuy();
         }
     }
@@ -152,17 +153,30 @@ public class ShooterGame implements ApplicationListener {
 
         playerGuy.update(delta);
         for (Bullet b : bullets) {
-            b.update(delta);
             if (b.isDead()) {
                 oldEntities.add(b);
+                continue;
             }
+            b.update(delta);
         }
         for (Entity e : oldEntities) {
             bullets.remove(e);
         }
         oldEntities.clear();
         for (EnemyGuy e : enemyGuys) {
+            if (e.isDead()) {
+                oldEntities.add(e);
+                continue;
+            }
             e.update(delta);
+        }
+
+        for (Entity e : oldEntities) {
+            enemyGuys.remove(e);
+        }
+
+        for (int i = enemyGuys.size(); i < ENEMY_COUNT; i++) {
+            addEnemyGuy();
         }
 
         checkCollisions();
@@ -174,7 +188,10 @@ public class ShooterGame implements ApplicationListener {
                 playerGuy.onCollision(e);
             }
             for (Bullet b : bullets) {
-
+                if (e.collides(b)) {
+                    e.setDead(true);
+                    b.setDead(true);
+                }
             }
         }
     }

@@ -34,6 +34,10 @@ final class Bullet extends Entity {
         return dead || isOutOfBounds();
     }
 
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
     private boolean isOutOfBounds() {
         float x = getX();
         float y = getY();

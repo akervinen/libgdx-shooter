@@ -3,11 +3,12 @@ package me.aleksi.shooter;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 final class EnemyGuy extends Entity {
     private static final String TEXTURE_FILE = "ghost.png";
-    private static final float MAX_SPEED = 10.0f;
+    private static final float MOVE_SPEED = 10.0f;
 
     private Texture texture;
 
@@ -19,10 +20,9 @@ final class EnemyGuy extends Entity {
         getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
 
         // Set  direction by random
-        speed = new Vector2((float) (Math.random() * MAX_SPEED - MAX_SPEED / 2),
-                (float) (Math.random() * MAX_SPEED - MAX_SPEED / 2));
+        speed = new Vector2(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f));
         speed.nor();
-        speed.scl(MAX_SPEED);
+        speed.scl(MOVE_SPEED);
     }
 
     static void loadAssets(AssetManager assets) {
@@ -43,10 +43,16 @@ final class EnemyGuy extends Entity {
 
         // Check if we've hit or gone past a wall, reverse if we have
 
-        if (x < 0 || (x + w) > getGame().getWorldWidth()) {
+        if (x < 0 && speed.x < 0) {
             speed.x *= -1;
         }
-        if (y < 0 || (y + h) > getGame().getWorldHeight()) {
+        if ((x + w) > getGame().getWorldWidth() && speed.x > 0) {
+            speed.x *= -1;
+        }
+        if (y < 0 && speed.y < 0) {
+            speed.y *= -1;
+        }
+        if ((y + h) > getGame().getWorldHeight() && speed.y > 0) {
             speed.y *= -1;
         }
 

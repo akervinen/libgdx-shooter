@@ -53,7 +53,8 @@ final class ShootyGuy extends Entity {
         moveVec.nor();
         moveVec.scl(deltaTime * MOVE_SPEED);
 
-        setPos(getX() + moveVec.x, getY() + moveVec.y);
+        moveX(moveVec.x);
+        moveY(moveVec.y);
     }
 
     public void onCollision(EnemyGuy e) {

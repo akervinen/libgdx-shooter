@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -70,7 +71,14 @@ public class ShooterGame implements ApplicationListener {
         Gdx.input.setInputProcessor(input);
 
         // Add a lone enemy for now
-        enemyGuys.add(new EnemyGuy(this));
+        addEnemyGuy();
+    }
+
+    public void addEnemyGuy() {
+        EnemyGuy e = new EnemyGuy(this);
+        e.setPos(MathUtils.random(getWorldWidth() - 1.0f),
+                MathUtils.random(getWorldHeight() - 1.0f));
+        enemyGuys.add(e);
     }
 
     @Override

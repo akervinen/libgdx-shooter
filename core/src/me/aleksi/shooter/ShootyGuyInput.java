@@ -27,6 +27,9 @@ final class ShootyGuyInput implements InputProcessor {
             //shootyGuy.setMovingRight(true);
             shootyGuy.setTurningRight(true);
             return true;
+        case Input.Keys.SPACE:
+            shootyGuy.setShooting(true);
+            return true;
         }
         return false;
     }
@@ -47,6 +50,9 @@ final class ShootyGuyInput implements InputProcessor {
         case Input.Keys.RIGHT:
             //shootyGuy.setMovingRight(false);
             shootyGuy.setTurningRight(false);
+            return true;
+        case Input.Keys.SPACE:
+            shootyGuy.setShooting(false);
             return true;
         }
         return false;

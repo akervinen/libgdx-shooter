@@ -52,6 +52,7 @@ public class ShooterGame implements ApplicationListener {
         assets = new AssetManager();
 
         ShootyGuy.loadAssets(assets);
+        Bullet.loadAssets(assets);
         EnemyGuy.loadAssets(assets);
 
         assets.finishLoading();

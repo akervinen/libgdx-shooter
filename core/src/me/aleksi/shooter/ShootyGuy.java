@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayList;
+
 final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
     private static final float MOVE_SPEED = 6.0f; // m/s
@@ -15,7 +17,9 @@ final class ShootyGuy extends Entity {
     private Texture texture;
     private float textureRotation = (float) Math.PI / 2; // radians
 
+    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     private float rotation; // radians
+    private Vector2 moveVec = new Vector2();
 
     private boolean movingUp = false;
     private boolean movingDown = false;
@@ -23,8 +27,7 @@ final class ShootyGuy extends Entity {
     private boolean movingRight = false;
     private boolean turningLeft = false;
     private boolean turningRight = false;
-
-    private Vector2 moveVec = new Vector2();
+    private boolean shooting = false;
 
     ShootyGuy(ShooterGame game) {
         super(game);
@@ -38,6 +41,10 @@ final class ShootyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
+        for (Bullet b : bullets) {
+            b.draw(batch);
+        }
+
         batch.draw(texture,
                 getX(),
                 getY(),
@@ -88,6 +95,20 @@ final class ShootyGuy extends Entity {
         newY = MathUtils.clamp(newY, 0f, getGame().getWorldHeight() - getRect().getHeight());
 
         setPos(newX, newY);
+
+        if (isShooting()) {
+            shoot();
+        }
+
+        for (Bullet b : bullets) {
+            b.update(deltaTime);
+        }
+    }
+
+    private void shoot() {
+        Bullet b = new Bullet(getGame(), Vector2.Y.cpy().rotateRad(rotation));
+        b.getRect().setPosition(getRect().getCenter(new Vector2()));
+        bullets.add(b);
     }
 
     public void onCollision(EnemyGuy e) {
@@ -140,5 +161,13 @@ final class ShootyGuy extends Entity {
 
     public void setTurningRight(boolean turningRight) {
         this.turningRight = turningRight;
+    }
+
+    public boolean isShooting() {
+        return shooting;
+    }
+
+    public void setShooting(boolean shooting) {
+        this.shooting = shooting;
     }
 }

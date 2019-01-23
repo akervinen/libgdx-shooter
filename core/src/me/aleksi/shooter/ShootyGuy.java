@@ -10,12 +10,14 @@ final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
     private static final float MOVE_SPEED = 6.0f; // m/s
     private static final float TURN_SPEED = (float) Math.PI * 2; // rad/s
+    private static final float SHOOT_DELAY = 0.5f; // seconds
 
     private Texture texture;
     private float textureRotation = (float) Math.PI / 2; // radians
 
     private float rotation; // radians
     private Vector2 moveVec = new Vector2();
+    private float shootElapsed;
 
     private boolean movingUp = false;
     private boolean movingDown = false;
@@ -89,12 +91,18 @@ final class ShootyGuy extends Entity {
 
         setPos(newX, newY);
 
+        shootElapsed += deltaTime;
         if (isShooting()) {
             shoot();
         }
     }
 
     private void shoot() {
+        if (shootElapsed < SHOOT_DELAY) {
+            return;
+        }
+
+        shootElapsed = 0;
         Vector2 dir = Vector2.Y.cpy().rotateRad(rotation);
         Bullet b = new Bullet(getGame(), dir);
         Vector2 spawnPos = getRect().getCenter(new Vector2()).add(dir.scl(0.6f));

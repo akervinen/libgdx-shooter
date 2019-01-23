@@ -20,8 +20,6 @@ final class ShootyGuy extends Entity {
 
     private boolean movingUp = false;
     private boolean movingDown = false;
-    private boolean movingLeft = false;
-    private boolean movingRight = false;
     private boolean turningLeft = false;
     private boolean turningRight = false;
     private boolean shooting = false;
@@ -65,12 +63,6 @@ final class ShootyGuy extends Entity {
         }
         if (isMovingDown()) {
             moveVec.y -= 1;
-        }
-        if (isMovingLeft()) {
-            moveVec.x -= 1;
-        }
-        if (isMovingRight()) {
-            moveVec.x += 1;
         }
         if (isTurningLeft()) {
             rotation += deltaTime * TURN_SPEED;
@@ -122,22 +114,6 @@ final class ShootyGuy extends Entity {
 
     public void setMovingDown(boolean movingDown) {
         this.movingDown = movingDown;
-    }
-
-    public boolean isMovingLeft() {
-        return movingLeft;
-    }
-
-    public void setMovingLeft(boolean movingLeft) {
-        this.movingLeft = movingLeft;
-    }
-
-    public boolean isMovingRight() {
-        return movingRight;
-    }
-
-    public void setMovingRight(boolean movingRight) {
-        this.movingRight = movingRight;
     }
 
     public boolean isTurningLeft() {

@@ -8,17 +8,18 @@ import com.badlogic.gdx.math.Vector2;
 final class Bullet extends Entity {
     private static final String TEXTURE_FILE = "bullet.png";
 
-    private static final float SPEED = 0.2f;
+    private static final float SPEED = 10f;
 
     private Texture texture;
 
+    private boolean dead;
     private Vector2 direction;
 
     Bullet(ShooterGame game, Vector2 direction) {
         super(game);
         this.direction = direction.cpy().nor();
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
-        getRect().setSize((float) texture.getWidth() / texture.getHeight(), 1.0f);
+        getRect().setSize(.5f * (float) texture.getWidth() / texture.getHeight(), .5f);
     }
 
     static void loadAssets(AssetManager assets) {
@@ -29,6 +30,19 @@ final class Bullet extends Entity {
         return -direction.angle(Vector2.Y);
     }
 
+    public boolean isDead() {
+        return dead || isOutOfBounds();
+    }
+
+    private boolean isOutOfBounds() {
+        float x = getX();
+        float y = getY();
+        float w = getRect().getWidth();
+        float h = getRect().getHeight();
+
+        return x < -1 || y < -1 || x + w > getGame().getWorldWidth() + 1 || y + h > getGame().getWorldHeight() + 1;
+    }
+
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(texture,
@@ -36,8 +50,8 @@ final class Bullet extends Entity {
                 getY(),
                 0f,
                 0f,
-                1f * getRect().getAspectRatio(),
-                1f,
+                getRect().getWidth(),
+                getRect().getHeight(),
                 1f,
                 1f,
                 getRotation(),
@@ -51,7 +65,7 @@ final class Bullet extends Entity {
 
     @Override
     public void update(float deltaTime) {
-        moveX(deltaTime * direction.x);
-        moveY(deltaTime * direction.y);
+        moveX(deltaTime * SPEED * direction.x);
+        moveY(deltaTime * SPEED * direction.y);
     }
 }

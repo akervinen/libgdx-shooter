@@ -7,17 +7,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-
 final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
     private static final float MOVE_SPEED = 6.0f; // m/s
-    private static final float TURN_SPEED = (float) Math.PI; // rad/s
+    private static final float TURN_SPEED = (float) Math.PI * 2; // rad/s
 
     private Texture texture;
     private float textureRotation = (float) Math.PI / 2; // radians
 
-    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     private float rotation; // radians
     private Vector2 moveVec = new Vector2();
 
@@ -41,10 +38,6 @@ final class ShootyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        for (Bullet b : bullets) {
-            b.draw(batch);
-        }
-
         batch.draw(texture,
                 getX(),
                 getY(),
@@ -99,16 +92,12 @@ final class ShootyGuy extends Entity {
         if (isShooting()) {
             shoot();
         }
-
-        for (Bullet b : bullets) {
-            b.update(deltaTime);
-        }
     }
 
     private void shoot() {
         Bullet b = new Bullet(getGame(), Vector2.Y.cpy().rotateRad(rotation));
         b.getRect().setPosition(getRect().getCenter(new Vector2()));
-        bullets.add(b);
+        getGame().addBullet(b);
     }
 
     public void onCollision(EnemyGuy e) {

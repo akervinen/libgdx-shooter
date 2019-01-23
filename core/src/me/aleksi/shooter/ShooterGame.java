@@ -6,7 +6,9 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -23,12 +25,15 @@ public class ShooterGame implements ApplicationListener {
 
     private Viewport gameViewport;
     private SpriteBatch batch;
+    private ShapeRenderer shapeRenderer;
 
     // Gameplay related
     private State state = State.Ongoing;
     private ShootyGuyInput input;
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
+    private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    private ArrayList<Entity> oldEntities = new ArrayList<Entity>();
 
     AssetManager getAssets() {
         return assets;
@@ -64,6 +69,7 @@ public class ShooterGame implements ApplicationListener {
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
         batch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         // Create our player ship/character and input handler
 
@@ -79,7 +85,7 @@ public class ShooterGame implements ApplicationListener {
         }
     }
 
-    public void addEnemyGuy() {
+    private void addEnemyGuy() {
         EnemyGuy e = new EnemyGuy(this);
 
         // Pick random positions until we get one at least 4 units away from the player
@@ -93,6 +99,10 @@ public class ShooterGame implements ApplicationListener {
         enemyGuys.add(e);
     }
 
+    void addBullet(Bullet b) {
+        bullets.add(b);
+    }
+
     @Override
     public void render() {
         // Do all entity logic first
@@ -104,14 +114,33 @@ public class ShooterGame implements ApplicationListener {
         // Camera and projection setup
         gameViewport.apply();
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
 
         // Draw everything
         batch.begin();
+        for (Bullet b : bullets) {
+            b.draw(batch);
+        }
         playerGuy.draw(batch);
         for (EnemyGuy e : enemyGuys) {
             e.draw(batch);
         }
         batch.end();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        for (Bullet b : bullets) {
+            Rectangle r = b.getRect();
+            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+        }
+        {
+            Rectangle r = playerGuy.getRect();
+            shapeRenderer.rect(r.x, r.y, r.width, r.getHeight());
+        }
+        for (EnemyGuy e : enemyGuys) {
+            Rectangle r = e.getRect();
+            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+        }
+        shapeRenderer.end();
     }
 
     private void update() {
@@ -122,6 +151,16 @@ public class ShooterGame implements ApplicationListener {
         float delta = Gdx.graphics.getDeltaTime();
 
         playerGuy.update(delta);
+        for (Bullet b : bullets) {
+            b.update(delta);
+            if (b.isDead()) {
+                oldEntities.add(b);
+            }
+        }
+        for (Entity e : oldEntities) {
+            bullets.remove(e);
+        }
+        oldEntities.clear();
         for (EnemyGuy e : enemyGuys) {
             e.update(delta);
         }

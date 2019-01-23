@@ -174,6 +174,7 @@ public class ShooterGame implements ApplicationListener {
         for (Entity e : oldEntities) {
             enemyGuys.remove(e);
         }
+        oldEntities.clear();
 
         for (int i = enemyGuys.size(); i < ENEMY_COUNT; i++) {
             addEnemyGuy();

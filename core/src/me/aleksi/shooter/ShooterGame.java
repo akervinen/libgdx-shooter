@@ -199,7 +199,7 @@ public class ShooterGame implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
-        gameViewport.update(width, height);
+        gameViewport.update(width, height, true);
     }
 
     @Override

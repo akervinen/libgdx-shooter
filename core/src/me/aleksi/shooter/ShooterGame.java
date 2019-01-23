@@ -25,6 +25,7 @@ public class ShooterGame implements ApplicationListener {
     private SpriteBatch batch;
 
     // Gameplay related
+    private State state = State.Ongoing;
     private ShootyGuyInput input;
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
@@ -113,6 +114,10 @@ public class ShooterGame implements ApplicationListener {
     }
 
     private void update() {
+        if (state != State.Ongoing) {
+            return;
+        }
+
         float delta = Gdx.graphics.getDeltaTime();
 
         playerGuy.update(delta);
@@ -141,17 +146,27 @@ public class ShooterGame implements ApplicationListener {
         // on desktop, pause is called when:
         // the window goes out of focus, and when the window is closed
         Gdx.app.log("GSG", "pause");
+
+        state = State.Paused;
     }
 
     @Override
     public void resume() {
         // on desktop, resume is called when the window comes back in focus
         Gdx.app.log("GSG", "resume");
+
+        state = State.Ongoing;
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         assets.dispose();
+    }
+
+    enum State {
+        Ongoing,
+        Paused,
+        Ended
     }
 }

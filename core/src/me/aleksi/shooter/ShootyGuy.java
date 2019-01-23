@@ -4,10 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
-    private static final float MOVE_SPEED = 2.0f;
+    private static final float MOVE_SPEED = 6.0f;
 
     private Texture texture;
 
@@ -15,6 +16,8 @@ final class ShootyGuy extends Entity {
     private boolean movingDown = false;
     private boolean movingLeft = false;
     private boolean movingRight = false;
+
+    private Vector2 moveVec = new Vector2();
 
     ShootyGuy(ShooterGame game) {
         super(game);
@@ -33,18 +36,24 @@ final class ShootyGuy extends Entity {
 
     @Override
     public void update(float deltaTime) {
+        moveVec.setZero();
+
         if (isMovingUp()) {
-            moveY(MOVE_SPEED * deltaTime);
+            moveVec.y += 1;
         }
         if (isMovingDown()) {
-            moveY(-MOVE_SPEED * deltaTime);
+            moveVec.y -= 1;
         }
         if (isMovingLeft()) {
-            moveX(-MOVE_SPEED * deltaTime);
+            moveVec.x -= 1;
         }
         if (isMovingRight()) {
-            moveX(MOVE_SPEED * deltaTime);
+            moveVec.x += 1;
         }
+        moveVec.nor();
+        moveVec.scl(deltaTime * MOVE_SPEED);
+
+        setPos(getX() + moveVec.x, getY() + moveVec.y);
     }
 
     public void onCollision(EnemyGuy e) {

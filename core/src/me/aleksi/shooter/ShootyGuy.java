@@ -1,6 +1,5 @@
 package me.aleksi.shooter;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,6 +22,9 @@ final class ShootyGuy extends Entity {
     private boolean turningLeft = false;
     private boolean turningRight = false;
     private boolean shooting = false;
+
+    private boolean hasTargetDir = false;
+    private Vector2 targetDir = new Vector2();
 
     ShootyGuy(ShooterGame game) {
         super(game);
@@ -57,6 +59,10 @@ final class ShootyGuy extends Entity {
     @Override
     public void update(float deltaTime) {
         moveVec.setZero();
+
+        if (hasTargetDir) {
+            rotation = -targetDir.angleRad(Vector2.Y) + (float) Math.PI;
+        }
 
         if (isMovingUp()) {
             moveVec.y += 1;
@@ -97,7 +103,15 @@ final class ShootyGuy extends Entity {
     }
 
     public void onCollision(EnemyGuy e) {
-        Gdx.app.log("GSG", "crash");
+        //Gdx.app.log("GSG", "crash");
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
     }
 
     public boolean isMovingUp() {
@@ -138,5 +152,21 @@ final class ShootyGuy extends Entity {
 
     public void setShooting(boolean shooting) {
         this.shooting = shooting;
+    }
+
+    public boolean isHasTargetDir() {
+        return hasTargetDir;
+    }
+
+    public void setHasTargetDir(boolean hasTargetDir) {
+        this.hasTargetDir = hasTargetDir;
+    }
+
+    public Vector2 getTargetDir() {
+        return targetDir;
+    }
+
+    public void setTargetDir(Vector2 targetDir) {
+        this.targetDir.set(targetDir);
     }
 }

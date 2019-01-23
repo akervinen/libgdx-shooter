@@ -77,7 +77,7 @@ public class ShooterGame implements ApplicationListener {
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 1.5f);
 
-        input = new ShootyGuyInput(playerGuy);
+        input = new ShootyGuyInput(gameViewport, playerGuy);
         Gdx.input.setInputProcessor(input);
 
         // Add enemies

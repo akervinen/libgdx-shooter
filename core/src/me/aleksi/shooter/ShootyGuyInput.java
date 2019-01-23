@@ -20,10 +20,12 @@ final class ShootyGuyInput implements InputProcessor {
             shootyGuy.setMovingDown(true);
             return true;
         case Input.Keys.LEFT:
-            shootyGuy.setMovingLeft(true);
+            //shootyGuy.setMovingLeft(true);
+            shootyGuy.setTurningLeft(true);
             return true;
         case Input.Keys.RIGHT:
-            shootyGuy.setMovingRight(true);
+            //shootyGuy.setMovingRight(true);
+            shootyGuy.setTurningRight(true);
             return true;
         }
         return false;
@@ -39,10 +41,12 @@ final class ShootyGuyInput implements InputProcessor {
             shootyGuy.setMovingDown(false);
             return true;
         case Input.Keys.LEFT:
-            shootyGuy.setMovingLeft(false);
+            //shootyGuy.setMovingLeft(false);
+            shootyGuy.setTurningLeft(false);
             return true;
         case Input.Keys.RIGHT:
-            shootyGuy.setMovingRight(false);
+            //shootyGuy.setMovingRight(false);
+            shootyGuy.setTurningRight(false);
             return true;
         }
         return false;

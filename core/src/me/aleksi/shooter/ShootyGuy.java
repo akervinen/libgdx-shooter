@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 final class ShootyGuy extends Entity {
@@ -53,8 +54,12 @@ final class ShootyGuy extends Entity {
         moveVec.nor();
         moveVec.scl(deltaTime * MOVE_SPEED);
 
-        moveX(moveVec.x);
-        moveY(moveVec.y);
+        float newX = getX() + moveVec.x;
+        float newY = getY() + moveVec.y;
+        newX = MathUtils.clamp(newX, 0f, getGame().getWorldWidth() - getRect().getWidth());
+        newY = MathUtils.clamp(newY, 0f, getGame().getWorldHeight() - getRect().getHeight());
+
+        setPos(newX, newY);
     }
 
     public void onCollision(EnemyGuy e) {

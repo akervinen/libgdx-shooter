@@ -32,13 +32,13 @@ final class EnemyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
-        batch.draw(texture, getX(), getY(), getRect().getWidth(), getRect().getHeight());
+        batch.draw(texture, getRect().x, getRect().y, getRect().getWidth(), getRect().getHeight());
     }
 
     @Override
     public void update(float deltaTime) {
-        float x = getX();
-        float y = getY();
+        float x = getRect().x;
+        float y = getRect().y;
         float w = getRect().getWidth();
         float h = getRect().getHeight();
 

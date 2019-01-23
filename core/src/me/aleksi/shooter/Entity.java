@@ -20,15 +20,15 @@ abstract class Entity {
     }
 
     public float getX() {
-        return rect.x;
+        return rect.x + rect.width / 2;
     }
 
     public float getY() {
-        return rect.y;
+        return rect.y + rect.height / 2;
     }
 
     public void setPos(float x, float y) {
-        rect.setPosition(x, y);
+        rect.setCenter(x, y);
     }
 
     public void moveX(float x) {

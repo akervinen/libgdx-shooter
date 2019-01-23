@@ -39,8 +39,8 @@ final class ShootyGuy extends Entity {
     @Override
     public void draw(SpriteBatch batch) {
         batch.draw(texture,
-                getX(),
-                getY(),
+                getRect().x,
+                getRect().y,
                 getRect().getWidth() / 2,
                 getRect().getHeight() / 2,
                 1f,
@@ -84,8 +84,10 @@ final class ShootyGuy extends Entity {
 
         float newX = getX() + moveVec.x;
         float newY = getY() + moveVec.y;
-        newX = MathUtils.clamp(newX, 0f, getGame().getWorldWidth() - getRect().getWidth());
-        newY = MathUtils.clamp(newY, 0f, getGame().getWorldHeight() - getRect().getHeight());
+        float w = getRect().getWidth();
+        float h = getRect().getHeight();
+        newX = MathUtils.clamp(newX, 0f + w / 2, getGame().getWorldWidth() - w / 2);
+        newY = MathUtils.clamp(newY, 0f + h / 2, getGame().getWorldHeight() - h / 2);
 
         setPos(newX, newY);
 
@@ -95,8 +97,10 @@ final class ShootyGuy extends Entity {
     }
 
     private void shoot() {
-        Bullet b = new Bullet(getGame(), Vector2.Y.cpy().rotateRad(rotation));
-        b.getRect().setPosition(getRect().getCenter(new Vector2()));
+        Vector2 dir = Vector2.Y.cpy().rotateRad(rotation);
+        Bullet b = new Bullet(getGame(), dir);
+        Vector2 spawnPos = getRect().getCenter(new Vector2()).add(dir.scl(0.6f));
+        b.getRect().setCenter(spawnPos);
         getGame().addBullet(b);
     }
 

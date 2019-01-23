@@ -74,7 +74,7 @@ public class ShooterGame implements ApplicationListener {
         // Create our player ship/character and input handler
 
         playerGuy = new ShootyGuy(this);
-        playerGuy.setPos(1.5f, 0f);
+        playerGuy.setPos(1.5f, 1.5f);
 
         input = new ShootyGuyInput(playerGuy);
         Gdx.input.setInputProcessor(input);
@@ -172,6 +172,9 @@ public class ShooterGame implements ApplicationListener {
         for (EnemyGuy e : enemyGuys) {
             if (playerGuy.collides(e)) {
                 playerGuy.onCollision(e);
+            }
+            for (Bullet b : bullets) {
+
             }
         }
     }

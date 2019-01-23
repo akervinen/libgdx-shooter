@@ -19,7 +19,7 @@ final class Bullet extends Entity {
         super(game);
         this.direction = direction.cpy().nor();
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
-        getRect().setSize(.5f * (float) texture.getWidth() / texture.getHeight(), .5f);
+        getRect().setSize(.25f, .25f);
     }
 
     static void loadAssets(AssetManager assets) {
@@ -40,18 +40,28 @@ final class Bullet extends Entity {
         float w = getRect().getWidth();
         float h = getRect().getHeight();
 
-        return x < -1 || y < -1 || x + w > getGame().getWorldWidth() + 1 || y + h > getGame().getWorldHeight() + 1;
+        float tolerance = 1.0f;
+
+        if (x < 0 - tolerance || x + w > getGame().getWorldWidth() + tolerance) {
+            return true;
+        } else if (y < 0 - tolerance || y + h > getGame().getWorldHeight() + tolerance) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     public void draw(SpriteBatch batch) {
+        float aspect = (float) texture.getWidth() / texture.getHeight();
+        float renderHeight = getRect().getHeight() / aspect;
         batch.draw(texture,
-                getX(),
-                getY(),
-                0f,
-                0f,
+                getRect().x,
+                getRect().y - renderHeight * 0.75f,
+                getRect().getWidth() / 2,
+                renderHeight * .75f + getRect().getHeight() / 2,
                 getRect().getWidth(),
-                getRect().getHeight(),
+                renderHeight,
                 1f,
                 1f,
                 getRotation(),

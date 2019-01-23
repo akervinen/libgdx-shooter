@@ -23,10 +23,10 @@ final class ShootyGuyInput implements InputProcessor {
     public boolean keyDown(int keycode) {
         switch (keycode) {
         case Input.Keys.UP:
-            shootyGuy.setMovingUp(true);
+            shootyGuy.setMovingForwards(true);
             return true;
         case Input.Keys.DOWN:
-            shootyGuy.setMovingDown(true);
+            shootyGuy.setMovingBackwards(true);
             return true;
         case Input.Keys.LEFT:
             //shootyGuy.setMovingLeft(true);
@@ -47,10 +47,10 @@ final class ShootyGuyInput implements InputProcessor {
     public boolean keyUp(int keycode) {
         switch (keycode) {
         case Input.Keys.UP:
-            shootyGuy.setMovingUp(false);
+            shootyGuy.setMovingForwards(false);
             return true;
         case Input.Keys.DOWN:
-            shootyGuy.setMovingDown(false);
+            shootyGuy.setMovingBackwards(false);
             return true;
         case Input.Keys.LEFT:
             //shootyGuy.setMovingLeft(false);
@@ -79,7 +79,7 @@ final class ShootyGuyInput implements InputProcessor {
             movingPointer = pointer;
             initialTouch.set(screenX, screenY);
             viewport.unproject(initialTouch);
-            shootyGuy.setMovingUp(true);
+            shootyGuy.setMovingForwards(true);
         } else {
             // Right side for shooting
             shootingPointer = pointer;
@@ -94,7 +94,7 @@ final class ShootyGuyInput implements InputProcessor {
         if (pointer == movingPointer) {
             initialTouch.setZero();
             shootyGuy.setHasTargetDir(false);
-            shootyGuy.setMovingUp(false);
+            shootyGuy.setMovingForwards(false);
         }
         if (pointer == shootingPointer) {
             shootyGuy.setShooting(false);

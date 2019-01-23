@@ -8,19 +8,19 @@ import com.badlogic.gdx.math.Vector2;
 
 final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
-    private static final float MOVE_SPEED = 6.0f; // m/s
+    private static final float TEXTURE_ROTATION = (float) Math.PI / 2; // radians
+    private static final float MOVE_SPEED = 4.0f; // m/s
     private static final float TURN_SPEED = (float) Math.PI * 2; // rad/s
     private static final float SHOOT_DELAY = 0.5f; // seconds
 
     private Texture texture;
-    private float textureRotation = (float) Math.PI / 2; // radians
 
     private float rotation; // radians
     private Vector2 moveVec = new Vector2();
     private float shootElapsed;
 
-    private boolean movingUp = false;
-    private boolean movingDown = false;
+    private boolean movingForwards = false;
+    private boolean movingBackwards = false;
     private boolean turningLeft = false;
     private boolean turningRight = false;
     private boolean shooting = false;
@@ -49,7 +49,7 @@ final class ShootyGuy extends Entity {
                 1f / getRect().getAspectRatio(),
                 1f,
                 1f,
-                (float) Math.toDegrees(textureRotation + rotation),
+                (float) Math.toDegrees(TEXTURE_ROTATION + rotation),
                 0,
                 0,
                 texture.getWidth(),
@@ -66,10 +66,10 @@ final class ShootyGuy extends Entity {
             rotation = -targetDir.angleRad(Vector2.Y) + (float) Math.PI;
         }
 
-        if (isMovingUp()) {
+        if (isMovingForwards()) {
             moveVec.y += 1;
         }
-        if (isMovingDown()) {
+        if (isMovingBackwards()) {
             moveVec.y -= 1;
         }
         if (isTurningLeft()) {
@@ -114,28 +114,20 @@ final class ShootyGuy extends Entity {
         //Gdx.app.log("GSG", "crash");
     }
 
-    public float getRotation() {
-        return rotation;
+    public boolean isMovingForwards() {
+        return movingForwards;
     }
 
-    public void setRotation(float rotation) {
-        this.rotation = rotation;
+    public void setMovingForwards(boolean movingUp) {
+        this.movingForwards = movingUp;
     }
 
-    public boolean isMovingUp() {
-        return movingUp;
+    public boolean isMovingBackwards() {
+        return movingBackwards;
     }
 
-    public void setMovingUp(boolean movingUp) {
-        this.movingUp = movingUp;
-    }
-
-    public boolean isMovingDown() {
-        return movingDown;
-    }
-
-    public void setMovingDown(boolean movingDown) {
-        this.movingDown = movingDown;
+    public void setMovingBackwards(boolean movingBackwards) {
+        this.movingBackwards = movingBackwards;
     }
 
     public boolean isTurningLeft() {
@@ -162,16 +154,8 @@ final class ShootyGuy extends Entity {
         this.shooting = shooting;
     }
 
-    public boolean isHasTargetDir() {
-        return hasTargetDir;
-    }
-
     public void setHasTargetDir(boolean hasTargetDir) {
         this.hasTargetDir = hasTargetDir;
-    }
-
-    public Vector2 getTargetDir() {
-        return targetDir;
     }
 
     public void setTargetDir(Vector2 targetDir) {

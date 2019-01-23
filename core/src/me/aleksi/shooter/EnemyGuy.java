@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 
 final class EnemyGuy extends Entity {
     private static final String TEXTURE_FILE = "ghost.png";
-    private static final float MIN_SPEED = 3f;
-    private static final float MAX_SPEED = 6f;
+    private static final float MIN_SPEED = 2f;
+    private static final float MAX_SPEED = 4f;
 
     private Texture texture;
 

@@ -79,6 +79,7 @@ final class ShootyGuyInput implements InputProcessor {
             movingPointer = pointer;
             initialTouch.set(screenX, screenY);
             viewport.unproject(initialTouch);
+            shootyGuy.setHasTargetDir(true);
             shootyGuy.setMovingForwards(true);
         } else {
             // Right side for shooting
@@ -109,7 +110,6 @@ final class ShootyGuyInput implements InputProcessor {
             Vector2 newTouch = new Vector2(screenX, screenY);
             viewport.unproject(newTouch);
             Vector2 newFacing = initialTouch.cpy().sub(newTouch);
-            shootyGuy.setHasTargetDir(true);
             shootyGuy.setTargetDir(newFacing);
         }
         return false;

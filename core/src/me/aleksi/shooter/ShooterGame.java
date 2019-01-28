@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -28,9 +29,10 @@ public class ShooterGame implements ApplicationListener {
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
 
+    private Texture background;
+
     // Gameplay related
     private State state = State.Ongoing;
-    private ShootyGuyInput input;
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
@@ -57,12 +59,14 @@ public class ShooterGame implements ApplicationListener {
         // Load all assets
         assets = new AssetManager();
 
+        assets.load("background.jpg", Texture.class);
         ShootyGuy.loadAssets(assets);
         Bullet.loadAssets(assets);
         EnemyGuy.loadAssets(assets);
 
         assets.finishLoading();
 
+        background = assets.get("background.jpg", Texture.class);
         gameViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
 
         // Initialize gameViewport, so that we can use its new world width and height
@@ -77,8 +81,7 @@ public class ShooterGame implements ApplicationListener {
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 1.5f);
 
-        input = new ShootyGuyInput(gameViewport, playerGuy);
-        Gdx.input.setInputProcessor(input);
+        Gdx.input.setInputProcessor(new ShootyGuyInput(gameViewport, playerGuy));
 
         // Add enemies
         for (int i = 0; i < ENEMY_COUNT; i++) {
@@ -117,8 +120,10 @@ public class ShooterGame implements ApplicationListener {
         batch.setProjectionMatrix(gameViewport.getCamera().combined);
         shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
 
+        float bgAspect = (float) background.getWidth() / background.getHeight();
         // Draw everything
         batch.begin();
+        batch.draw(background, 0, 0, getWorldWidth(), getWorldWidth() / bgAspect);
         for (Bullet b : bullets) {
             b.draw(batch);
         }

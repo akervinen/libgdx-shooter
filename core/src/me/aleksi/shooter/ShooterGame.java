@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -133,20 +132,20 @@ public class ShooterGame implements ApplicationListener {
         }
         batch.end();
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        for (Bullet b : bullets) {
-            Rectangle r = b.getRect();
-            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-        }
-        {
-            Rectangle r = playerGuy.getRect();
-            shapeRenderer.rect(r.x, r.y, r.width, r.getHeight());
-        }
-        for (EnemyGuy e : enemyGuys) {
-            Rectangle r = e.getRect();
-            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-        }
-        shapeRenderer.end();
+//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+//        for (Bullet b : bullets) {
+//            Rectangle r = b.getRect();
+//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+//        }
+//        {
+//            Rectangle r = playerGuy.getRect();
+//            shapeRenderer.rect(r.x, r.y, r.width, r.getHeight());
+//        }
+//        for (EnemyGuy e : enemyGuys) {
+//            Rectangle r = e.getRect();
+//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
+//        }
+//        shapeRenderer.end();
     }
 
     private void update() {

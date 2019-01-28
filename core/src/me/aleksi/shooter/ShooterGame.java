@@ -7,11 +7,12 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -28,8 +29,11 @@ public class ShooterGame implements ApplicationListener {
     private AssetManager assets;
 
     private Viewport gameViewport;
+    private Viewport uiViewport;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
+
+    private BitmapFont font;
 
     private Music bgMusic;
     private Texture background;
@@ -40,6 +44,8 @@ public class ShooterGame implements ApplicationListener {
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     private ArrayList<Entity> oldEntities = new ArrayList<Entity>();
+
+    private int score;
 
     AssetManager getAssets() {
         return assets;
@@ -61,23 +67,28 @@ public class ShooterGame implements ApplicationListener {
     public void create() {
         // Load all assets
         assets = new AssetManager();
+        assets.load("8-bit-operator.fnt", BitmapFont.class);
         assets.load(MUSIC_FILE, Music.class);
         assets.load(BACKGROUND_FILE, Texture.class);
         ShootyGuy.loadAssets(assets);
         Bullet.loadAssets(assets);
         EnemyGuy.loadAssets(assets);
-
         assets.finishLoading();
+
+        font = assets.get("8-bit-operator.fnt", BitmapFont.class);
+        //font.getData().setScale(.5f);
 
         bgMusic = assets.get(MUSIC_FILE, Music.class);
         bgMusic.setLooping(true);
         bgMusic.play();
 
         background = assets.get(BACKGROUND_FILE, Texture.class);
-        gameViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+        gameViewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
+        uiViewport = new FitViewport(320, 180, new OrthographicCamera());
 
-        // Initialize gameViewport, so that we can use its new world width and height
+        // Initialize viewports, so that we can use their new world width and height
         // (because ExtendViewport can change the width or height).
+        uiViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         gameViewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
 
         batch = new SpriteBatch();
@@ -128,6 +139,7 @@ public class ShooterGame implements ApplicationListener {
         shapeRenderer.setProjectionMatrix(gameViewport.getCamera().combined);
 
         float bgAspect = (float) background.getWidth() / background.getHeight();
+
         // Draw everything
         batch.begin();
         batch.draw(background, 0, 0, getWorldWidth(), getWorldWidth() / bgAspect);
@@ -138,6 +150,13 @@ public class ShooterGame implements ApplicationListener {
         for (EnemyGuy e : enemyGuys) {
             e.draw(batch);
         }
+        batch.end();
+
+        uiViewport.apply(true);
+        batch.setProjectionMatrix(uiViewport.getCamera().combined);
+
+        batch.begin();
+        font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
         batch.end();
 
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -204,6 +223,7 @@ public class ShooterGame implements ApplicationListener {
                 if (e.collides(b)) {
                     e.setDead(true);
                     b.setDead(true);
+                    score += 1;
                 }
             }
         }
@@ -212,6 +232,7 @@ public class ShooterGame implements ApplicationListener {
     @Override
     public void resize(int width, int height) {
         gameViewport.update(width, height, true);
+        uiViewport.update(width, height, true);
     }
 
     @Override

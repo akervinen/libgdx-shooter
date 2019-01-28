@@ -3,6 +3,7 @@ package me.aleksi.shooter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -28,6 +29,7 @@ public class ShooterGame implements ApplicationListener {
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
 
+    private Music bgMusic;
     private Texture background;
 
     // Gameplay related
@@ -57,13 +59,17 @@ public class ShooterGame implements ApplicationListener {
     public void create() {
         // Load all assets
         assets = new AssetManager();
-
+        assets.load("music.mp3", Music.class);
         assets.load("background.jpg", Texture.class);
         ShootyGuy.loadAssets(assets);
         Bullet.loadAssets(assets);
         EnemyGuy.loadAssets(assets);
 
         assets.finishLoading();
+
+        bgMusic = assets.get("music.mp3", Music.class);
+        bgMusic.setLooping(true);
+        bgMusic.play();
 
         background = assets.get("background.jpg", Texture.class);
         gameViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());

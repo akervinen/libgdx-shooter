@@ -1,6 +1,7 @@
 package me.aleksi.shooter;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -8,10 +9,12 @@ import com.badlogic.gdx.math.Vector2;
 
 final class EnemyGuy extends Entity {
     private static final String TEXTURE_FILE = "ghost.png";
+    private static final String DEATH_SOUND_FILE = "enemy-deathsound.wav";
     private static final float MIN_SPEED = 2f;
     private static final float MAX_SPEED = 4f;
 
     private Texture texture;
+    private Sound deathSound;
 
     private boolean dead;
     private Vector2 speed;
@@ -20,6 +23,8 @@ final class EnemyGuy extends Entity {
         super(game);
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
         getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
+
+        deathSound = game.getAssets().get(DEATH_SOUND_FILE, Sound.class);
 
         // Set  direction by random
         speed = new Vector2(MathUtils.random(-1f, 1f), MathUtils.random(-1f, 1f));
@@ -31,12 +36,17 @@ final class EnemyGuy extends Entity {
         return dead;
     }
 
-    public void setDead(boolean dead) {
-        this.dead = dead;
-    }
-
     static void loadAssets(AssetManager assets) {
         assets.load(TEXTURE_FILE, Texture.class);
+        assets.load(DEATH_SOUND_FILE, Sound.class);
+    }
+
+    public void setDead(boolean dead) {
+        if (dead && !this.dead) {
+            deathSound.play();
+        }
+
+        this.dead = dead;
     }
 
     @Override

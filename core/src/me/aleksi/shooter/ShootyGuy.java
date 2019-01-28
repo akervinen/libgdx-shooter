@@ -1,6 +1,7 @@
 package me.aleksi.shooter;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -8,12 +9,16 @@ import com.badlogic.gdx.math.Vector2;
 
 final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "thonk.png";
+    private static final String SHOOT_SOUND_FILE = "shootyguy-blaster.wav";
+    private static final String THRUSTER_SOUND_FILE = "shootyguy-thruster.flac";
     private static final float TEXTURE_ROTATION = (float) Math.PI / 2; // radians
     private static final float MOVE_SPEED = 4.0f; // m/s
     private static final float TURN_SPEED = (float) Math.PI * 2; // rad/s
     private static final float SHOOT_DELAY = 0.5f; // seconds
 
     private Texture texture;
+    private Sound shootySound;
+    private Sound thrusterSound;
 
     private float rotation; // radians
     private Vector2 moveVec = new Vector2();
@@ -33,10 +38,15 @@ final class ShootyGuy extends Entity {
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
         float aspect = (float) texture.getWidth() / texture.getHeight();
         getRect().setSize(1 / aspect, 1 / aspect);
+
+        shootySound = game.getAssets().get(SHOOT_SOUND_FILE, Sound.class);
+        thrusterSound = game.getAssets().get(THRUSTER_SOUND_FILE, Sound.class);
     }
 
     static void loadAssets(AssetManager assets) {
         assets.load(TEXTURE_FILE, Texture.class);
+        assets.load(SHOOT_SOUND_FILE, Sound.class);
+        assets.load(THRUSTER_SOUND_FILE, Sound.class);
     }
 
     @Override
@@ -106,6 +116,8 @@ final class ShootyGuy extends Entity {
             return;
         }
 
+        shootySound.play();
+
         shootElapsed = 0;
         Vector2 dir = Vector2.Y.cpy().rotateRad(rotation);
         Bullet b = new Bullet(getGame(), dir);
@@ -124,6 +136,12 @@ final class ShootyGuy extends Entity {
 
     public void setMovingForwards(boolean movingUp) {
         this.movingForwards = movingUp;
+
+        if (movingUp) {
+            thrusterSound.loop();
+        } else {
+            thrusterSound.stop();
+        }
     }
 
     public boolean isMovingBackwards() {

@@ -1,5 +1,6 @@
 package me.aleksi.shooter;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -26,6 +27,9 @@ final class ShootyGuy extends Entity {
     private float rotation; // radians
     private Vector2 moveVec = new Vector2();
     private float shootElapsed;
+
+    private boolean dead = false;
+    private float deadTimer = 0.0f;
 
     private boolean movingForwards = false;
     private boolean movingBackwards = false;
@@ -61,9 +65,13 @@ final class ShootyGuy extends Entity {
         if (movingForwards) {
             current = thrustersTexture;
         }
+        if (dead) {
+            deadTimer += Gdx.graphics.getDeltaTime();
+        }
         float aspect = (float) texture.getWidth() / texture.getHeight();
         float w = getRect().getWidth();
         float realWidth = 1.0f;
+        float deadRad = deadTimer * 5;
         batch.draw(current,
                 getRect().x + (w - realWidth) / 2,
                 getRect().y,
@@ -73,7 +81,7 @@ final class ShootyGuy extends Entity {
                 1f / aspect,
                 1f,
                 1f,
-                (float) Math.toDegrees(TEXTURE_ROTATION + rotation),
+                (float) Math.toDegrees(TEXTURE_ROTATION + rotation + deadRad),
                 0,
                 0,
                 texture.getWidth(),
@@ -137,17 +145,28 @@ final class ShootyGuy extends Entity {
     }
 
     public void onCollision(EnemyGuy e) {
-        //Gdx.app.log("GSG", "crash");
+        setDead(true);
+    }
+
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+        if (dead) {
+            thrusterSound.stop();
+        }
     }
 
     public boolean isMovingForwards() {
         return movingForwards;
     }
 
-    public void setMovingForwards(boolean movingUp) {
-        this.movingForwards = movingUp;
+    public void setMovingForwards(boolean movingForwards) {
+        this.movingForwards = movingForwards;
 
-        if (movingUp) {
+        if (movingForwards && !dead) {
             thrusterSound.loop(THRUSTER_SOUND_VOLUME);
         } else {
             thrusterSound.stop();

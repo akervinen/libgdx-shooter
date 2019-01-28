@@ -3,7 +3,6 @@ package me.aleksi.shooter;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -37,7 +36,6 @@ public class ShooterGame implements ApplicationListener {
     private ShapeRenderer shapeRenderer;
 
     private BitmapFont font;
-
     private Music bgMusic;
     private Texture background;
 
@@ -46,6 +44,8 @@ public class ShooterGame implements ApplicationListener {
 
     // Gameplay related
     private State state = State.Paused;
+    private float endWaitTimer;
+
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
@@ -105,35 +105,23 @@ public class ShooterGame implements ApplicationListener {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
-        // Create our player ship/character and input handler
+        reset();
+    }
 
+    private void reset() {
+        state = ShooterGame.State.Paused;
+        endWaitTimer = 0;
+        score = 0;
+        enemyGuys.clear();
+        bullets.clear();
+
+        // Create our player ship/character and input handler
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 1.5f);
 
         InputMultiplexer input = new InputMultiplexer();
-        input.addProcessor(new InputAdapter() {
-            @Override
-            public boolean keyDown(int keycode) {
-                if (state == State.Paused) {
-                    state = State.Ongoing;
-                } else if (state == State.Ended) {
-                    state = State.Paused;
-                }
-                return false;
-            }
-
-            @Override
-            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (state == State.Paused) {
-                    state = State.Ongoing;
-                } else if (state == State.Ended) {
-                    state = State.Paused;
-                }
-                return false;
-            }
-        });
+        input.addProcessor(new InputUnpauser(this));
         input.addProcessor(new ShootyGuyInput(gameViewport, playerGuy));
-
         Gdx.input.setInputProcessor(input);
 
         // Add enemies
@@ -158,6 +146,14 @@ public class ShooterGame implements ApplicationListener {
 
     void addBullet(Bullet b) {
         bullets.add(b);
+    }
+
+    void unpause() {
+        if (state == ShooterGame.State.Paused) {
+            state = ShooterGame.State.Ongoing;
+        } else if (state == ShooterGame.State.Ended && endWaitTimer > 1) {
+            reset();
+        }
     }
 
     @Override
@@ -191,9 +187,8 @@ public class ShooterGame implements ApplicationListener {
         batch.setProjectionMatrix(uiViewport.getCamera().combined);
 
         batch.begin();
-        if (this.state == State.Ongoing) {
-            font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
-        } else {
+        font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
+        if (state != State.Ongoing) {
             font.draw(batch, leftHelp, 5, uiViewport.getWorldHeight() / 2);
             font.draw(batch, rightHelp, uiViewport.getWorldWidth() / 2 + 5, uiViewport.getWorldHeight() / 2);
         }
@@ -217,6 +212,9 @@ public class ShooterGame implements ApplicationListener {
 
     private void update() {
         if (state != State.Ongoing) {
+            if (state == State.Ended) {
+                endWaitTimer += Gdx.graphics.getDeltaTime();
+            }
             return;
         }
 
@@ -258,6 +256,7 @@ public class ShooterGame implements ApplicationListener {
         for (EnemyGuy e : enemyGuys) {
             if (playerGuy.collides(e)) {
                 playerGuy.onCollision(e);
+                state = State.Ended;
             }
             for (Bullet b : bullets) {
                 if (e.collides(b)) {

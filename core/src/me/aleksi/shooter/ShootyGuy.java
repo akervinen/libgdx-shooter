@@ -31,7 +31,8 @@ final class ShootyGuy extends Entity {
     ShootyGuy(ShooterGame game) {
         super(game);
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
-        getRect().setSize(1.0f, (float) texture.getHeight() / texture.getWidth());
+        float aspect = (float) texture.getWidth() / texture.getHeight();
+        getRect().setSize(1 / aspect, 1 / aspect);
     }
 
     static void loadAssets(AssetManager assets) {
@@ -40,13 +41,16 @@ final class ShootyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
+        float aspect = (float) texture.getWidth() / texture.getHeight();
+        float w = getRect().getWidth();
+        float realWidth = 1.0f;
         batch.draw(texture,
-                getRect().x,
+                getRect().x + (w - realWidth) / 2,
                 getRect().y,
-                getRect().getWidth() / 2,
+                realWidth / 2,
                 getRect().getHeight() / 2,
                 1f,
-                1f / getRect().getAspectRatio(),
+                1f / aspect,
                 1f,
                 1f,
                 (float) Math.toDegrees(TEXTURE_ROTATION + rotation),

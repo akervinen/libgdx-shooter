@@ -239,16 +239,12 @@ public class ShooterGame implements ApplicationListener {
     public void pause() {
         // on desktop, pause is called when:
         // the window goes out of focus, and when the window is closed
-        Gdx.app.log("GSG", "pause");
-
         state = State.Paused;
     }
 
     @Override
     public void resume() {
         // on desktop, resume is called when the window comes back in focus
-        Gdx.app.log("GSG", "resume");
-
         state = State.Ongoing;
     }
 

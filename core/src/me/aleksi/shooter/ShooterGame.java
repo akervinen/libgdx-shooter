@@ -1,7 +1,10 @@
 package me.aleksi.shooter;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
@@ -38,8 +41,11 @@ public class ShooterGame implements ApplicationListener {
     private Music bgMusic;
     private Texture background;
 
+    private CharSequence leftHelp = "Tap and drag on the\nleft half to move";
+    private CharSequence rightHelp = "Tap or hold on the\nright half to shoot";
+
     // Gameplay related
-    private State state = State.Ongoing;
+    private State state = State.Paused;
     private ShootyGuy playerGuy;
     private ArrayList<EnemyGuy> enemyGuys = new ArrayList<EnemyGuy>(1);
     private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
@@ -65,6 +71,12 @@ public class ShooterGame implements ApplicationListener {
 
     @Override
     public void create() {
+        // Different help text on desktop
+        if (Gdx.app.getType() == Application.ApplicationType.Desktop) {
+            leftHelp = "Arrows to move";
+            rightHelp = "Space to shoot";
+        }
+
         // Load all assets
         assets = new AssetManager();
         assets.load("8-bit-operator.fnt", BitmapFont.class);
@@ -76,7 +88,6 @@ public class ShooterGame implements ApplicationListener {
         assets.finishLoading();
 
         font = assets.get("8-bit-operator.fnt", BitmapFont.class);
-        //font.getData().setScale(.5f);
 
         bgMusic = assets.get(MUSIC_FILE, Music.class);
         bgMusic.setLooping(true);
@@ -99,7 +110,31 @@ public class ShooterGame implements ApplicationListener {
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 1.5f);
 
-        Gdx.input.setInputProcessor(new ShootyGuyInput(gameViewport, playerGuy));
+        InputMultiplexer input = new InputMultiplexer();
+        input.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyDown(int keycode) {
+                if (state == State.Paused) {
+                    state = State.Ongoing;
+                } else if (state == State.Ended) {
+                    state = State.Paused;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (state == State.Paused) {
+                    state = State.Ongoing;
+                } else if (state == State.Ended) {
+                    state = State.Paused;
+                }
+                return false;
+            }
+        });
+        input.addProcessor(new ShootyGuyInput(gameViewport, playerGuy));
+
+        Gdx.input.setInputProcessor(input);
 
         // Add enemies
         for (int i = 0; i < ENEMY_COUNT; i++) {
@@ -156,7 +191,12 @@ public class ShooterGame implements ApplicationListener {
         batch.setProjectionMatrix(uiViewport.getCamera().combined);
 
         batch.begin();
-        font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
+        if (this.state == State.Ongoing) {
+            font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
+        } else {
+            font.draw(batch, leftHelp, 5, uiViewport.getWorldHeight() / 2);
+            font.draw(batch, rightHelp, uiViewport.getWorldWidth() / 2 + 5, uiViewport.getWorldHeight() / 2);
+        }
         batch.end();
 
 //        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

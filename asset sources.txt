@@ -1,7 +1,4 @@
 Enemy death sound: https://freesound.org/people/V-ktor/sounds/435416/
 Laser shot sound: https://freesound.org/people/JavierZumer/sounds/257232/
-Background music: http://freemusicarchive.org/music/UltraCat/Orbiting_the_Earth/ultracat_-_01_-_orbiting_the_earth
-
-Background: https://commons.wikimedia.org/wiki/File:Andromeda_galaxy.jpg
-    edited to fill empty space
-
+Engine sound: https://freesound.org/people/Timbre/sounds/169859/
+Background music: http://freemusicarchive.org/music/Komiku/Captain_Glouglous_Incredible_Week_Soundtrack/pog

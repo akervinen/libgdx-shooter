@@ -8,15 +8,18 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 final class ShootyGuy extends Entity {
-    private static final String TEXTURE_FILE = "thonk.png";
-    private static final String SHOOT_SOUND_FILE = "shootyguy-blaster.wav";
-    private static final String THRUSTER_SOUND_FILE = "shootyguy-thruster.flac";
+    private static final String TEXTURE_FILE = "shootyguy.png";
+    private static final String THRUSTERS_TEXTURE_FILE = "shootyguy-thrusters.png";
+    private static final String SHOOT_SOUND_FILE = "shootyguy-blaster.ogg";
+    private static final String THRUSTER_SOUND_FILE = "shootyguy-thruster.ogg";
+    private static final float THRUSTER_SOUND_VOLUME = 0.5f;
     private static final float TEXTURE_ROTATION = (float) Math.PI / 2; // radians
     private static final float MOVE_SPEED = 4.0f; // m/s
     private static final float TURN_SPEED = (float) Math.PI * 2; // rad/s
     private static final float SHOOT_DELAY = 0.5f; // seconds
 
     private Texture texture;
+    private Texture thrustersTexture;
     private Sound shootySound;
     private Sound thrusterSound;
 
@@ -35,26 +38,33 @@ final class ShootyGuy extends Entity {
 
     ShootyGuy(ShooterGame game) {
         super(game);
-        texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
-        float aspect = (float) texture.getWidth() / texture.getHeight();
-        getRect().setSize(1 / aspect, 1 / aspect);
 
+        texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
+        thrustersTexture = game.getAssets().get(THRUSTERS_TEXTURE_FILE, Texture.class);
         shootySound = game.getAssets().get(SHOOT_SOUND_FILE, Sound.class);
         thrusterSound = game.getAssets().get(THRUSTER_SOUND_FILE, Sound.class);
+
+        float aspect = (float) texture.getWidth() / texture.getHeight();
+        getRect().setSize(1 / aspect, 1 / aspect);
     }
 
     static void loadAssets(AssetManager assets) {
         assets.load(TEXTURE_FILE, Texture.class);
+        assets.load(THRUSTERS_TEXTURE_FILE, Texture.class);
         assets.load(SHOOT_SOUND_FILE, Sound.class);
         assets.load(THRUSTER_SOUND_FILE, Sound.class);
     }
 
     @Override
     public void draw(SpriteBatch batch) {
+        Texture current = texture;
+        if (movingForwards) {
+            current = thrustersTexture;
+        }
         float aspect = (float) texture.getWidth() / texture.getHeight();
         float w = getRect().getWidth();
         float realWidth = 1.0f;
-        batch.draw(texture,
+        batch.draw(current,
                 getRect().x + (w - realWidth) / 2,
                 getRect().y,
                 realWidth / 2,
@@ -138,7 +148,7 @@ final class ShootyGuy extends Entity {
         this.movingForwards = movingUp;
 
         if (movingUp) {
-            thrusterSound.loop();
+            thrusterSound.loop(THRUSTER_SOUND_VOLUME);
         } else {
             thrusterSound.stop();
         }

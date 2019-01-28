@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 final class EnemyGuy extends Entity {
-    private static final String TEXTURE_FILE = "ghost.png";
-    private static final String DEATH_SOUND_FILE = "enemy-deathsound.wav";
+    private static final String TEXTURE_FILE = "enemy.png";
+    private static final String DEATH_SOUND_FILE = "enemy-deathsound.ogg";
     private static final float MIN_SPEED = 2f;
     private static final float MAX_SPEED = 4f;
 
@@ -32,13 +32,13 @@ final class EnemyGuy extends Entity {
         speed.scl(MathUtils.random(MIN_SPEED, MAX_SPEED));
     }
 
-    public boolean isDead() {
-        return dead;
-    }
-
     static void loadAssets(AssetManager assets) {
         assets.load(TEXTURE_FILE, Texture.class);
         assets.load(DEATH_SOUND_FILE, Sound.class);
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 
     public void setDead(boolean dead) {

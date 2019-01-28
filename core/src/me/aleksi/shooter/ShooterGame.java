@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 public class ShooterGame implements ApplicationListener {
     // Some constants
+    private static final String MUSIC_FILE = "music.mp3";
+    private static final String BACKGROUND_FILE = "space-bg.png";
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
     private static final int ENEMY_COUNT = 3;
@@ -59,19 +61,19 @@ public class ShooterGame implements ApplicationListener {
     public void create() {
         // Load all assets
         assets = new AssetManager();
-        assets.load("music.mp3", Music.class);
-        assets.load("background.jpg", Texture.class);
+        assets.load(MUSIC_FILE, Music.class);
+        assets.load(BACKGROUND_FILE, Texture.class);
         ShootyGuy.loadAssets(assets);
         Bullet.loadAssets(assets);
         EnemyGuy.loadAssets(assets);
 
         assets.finishLoading();
 
-        bgMusic = assets.get("music.mp3", Music.class);
+        bgMusic = assets.get(MUSIC_FILE, Music.class);
         bgMusic.setLooping(true);
         bgMusic.play();
 
-        background = assets.get("background.jpg", Texture.class);
+        background = assets.get(BACKGROUND_FILE, Texture.class);
         gameViewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, new OrthographicCamera());
 
         // Initialize gameViewport, so that we can use its new world width and height

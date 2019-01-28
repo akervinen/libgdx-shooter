@@ -12,6 +12,7 @@ final class ShootyGuy extends Entity {
     private static final String TEXTURE_FILE = "shootyguy.png";
     private static final String THRUSTERS_TEXTURE_FILE = "shootyguy-thrusters.png";
     private static final String SHOOT_SOUND_FILE = "shootyguy-blaster.ogg";
+    private static final String DEATH_SOUND_FILE = "shootyguy-death.mp3";
     private static final String THRUSTER_SOUND_FILE = "shootyguy-thruster.ogg";
     private static final float THRUSTER_SOUND_VOLUME = 0.5f;
     private static final float TEXTURE_ROTATION = (float) Math.PI / 2; // radians
@@ -22,6 +23,7 @@ final class ShootyGuy extends Entity {
     private Texture texture;
     private Texture thrustersTexture;
     private Sound shootySound;
+    private Sound deathSound;
     private Sound thrusterSound;
 
     private float rotation; // radians
@@ -46,6 +48,7 @@ final class ShootyGuy extends Entity {
         texture = game.getAssets().get(TEXTURE_FILE, Texture.class);
         thrustersTexture = game.getAssets().get(THRUSTERS_TEXTURE_FILE, Texture.class);
         shootySound = game.getAssets().get(SHOOT_SOUND_FILE, Sound.class);
+        deathSound = game.getAssets().get(DEATH_SOUND_FILE, Sound.class);
         thrusterSound = game.getAssets().get(THRUSTER_SOUND_FILE, Sound.class);
 
         float aspect = (float) texture.getWidth() / texture.getHeight();
@@ -56,6 +59,7 @@ final class ShootyGuy extends Entity {
         assets.load(TEXTURE_FILE, Texture.class);
         assets.load(THRUSTERS_TEXTURE_FILE, Texture.class);
         assets.load(SHOOT_SOUND_FILE, Sound.class);
+        assets.load(DEATH_SOUND_FILE, Sound.class);
         assets.load(THRUSTER_SOUND_FILE, Sound.class);
     }
 
@@ -153,10 +157,11 @@ final class ShootyGuy extends Entity {
     }
 
     public void setDead(boolean dead) {
-        this.dead = dead;
-        if (dead) {
+        if (dead && !this.dead) {
             thrusterSound.stop();
+            deathSound.play();
         }
+        this.dead = dead;
     }
 
     public boolean isMovingForwards() {

@@ -27,7 +27,7 @@ public class ShooterGame implements ApplicationListener {
     private static final String BACKGROUND_FILE = "space-bg.png";
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
-    private static final int ENEMY_COUNT = 3;
+    private static final int START_ENEMY_COUNT = 3;
 
     private boolean hasAccelSensor = false;
     private Vector3 accelVec = new Vector3();
@@ -136,7 +136,7 @@ public class ShooterGame implements ApplicationListener {
         Gdx.input.setInputProcessor(input);
 
         // Add enemies
-        for (int i = 0; i < ENEMY_COUNT; i++) {
+        for (int i = 0; i < START_ENEMY_COUNT; i++) {
             addEnemyGuy();
         }
     }
@@ -144,12 +144,20 @@ public class ShooterGame implements ApplicationListener {
     private void addEnemyGuy() {
         EnemyGuy e = new EnemyGuy(this);
 
+        float safetyZoneSqr = 16f;
+
+        if (score > 60) {
+            safetyZoneSqr = 4f;
+        } else if (score > 30) {
+            safetyZoneSqr = 9f;
+        }
+
         // Pick random positions until we get one at least 4 units away from the player
         float x, y;
         do {
             x = MathUtils.random(1f, getWorldWidth() - 1f);
             y = MathUtils.random(1f, getWorldHeight() - 1f);
-        } while (Vector2.dst2(x, y, playerGuy.getX(), playerGuy.getY()) < 16f);
+        } while (Vector2.dst2(x, y, playerGuy.getX(), playerGuy.getY()) < safetyZoneSqr);
 
         e.setPos(x, y);
         enemyGuys.add(e);
@@ -157,6 +165,9 @@ public class ShooterGame implements ApplicationListener {
 
     void addBullet(Bullet b) {
         bullets.add(b);
+    }
+
+    private void onScore() {
     }
 
     void unpause() {
@@ -256,7 +267,8 @@ public class ShooterGame implements ApplicationListener {
         }
         oldEntities.clear();
 
-        for (int i = enemyGuys.size(); i < ENEMY_COUNT; i++) {
+        int enemyCount = START_ENEMY_COUNT + (score / 15);
+        for (int i = enemyGuys.size(); i < enemyCount; i++) {
             addEnemyGuy();
         }
 
@@ -273,7 +285,7 @@ public class ShooterGame implements ApplicationListener {
                 if (!b.isDead() && !e.isDead() && !e.isGhost() && e.collides(b)) {
                     e.setDead(true);
                     b.setDead(true);
-                    score += 1;
+                    onScore();
                 }
             }
         }

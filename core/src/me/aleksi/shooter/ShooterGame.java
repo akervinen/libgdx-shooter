@@ -300,6 +300,7 @@ public class ShooterGame implements ApplicationListener {
 
     @Override
     public void dispose() {
+        shapeRenderer.dispose();
         batch.dispose();
         assets.dispose();
     }

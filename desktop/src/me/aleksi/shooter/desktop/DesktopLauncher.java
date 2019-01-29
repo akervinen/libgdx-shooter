@@ -8,7 +8,7 @@ import me.aleksi.shooter.ShooterGame;
 public class DesktopLauncher {
     public static void main(String[] arg) {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = "Generic Shooter Game";
+        config.title = "Thonk'em Up";
         config.width = 800;
         config.height = 450;
         new LwjglApplication(new ShooterGame(), config);

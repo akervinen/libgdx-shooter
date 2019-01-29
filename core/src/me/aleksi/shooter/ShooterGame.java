@@ -168,6 +168,7 @@ public class ShooterGame implements ApplicationListener {
     }
 
     private void onScore() {
+        score += 1;
     }
 
     void unpause() {

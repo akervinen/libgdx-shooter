@@ -1,5 +1,6 @@
 package me.aleksi.shooter;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 
 final class InputUnpauser extends InputAdapter {
@@ -11,7 +12,14 @@ final class InputUnpauser extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        game.unpause();
+        switch (keycode) {
+        case Input.Keys.UP:
+        case Input.Keys.DOWN:
+        case Input.Keys.LEFT:
+        case Input.Keys.RIGHT:
+        case Input.Keys.SPACE:
+            game.unpause();
+        }
         return false;
     }
 

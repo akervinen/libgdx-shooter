@@ -3,6 +3,7 @@ package me.aleksi.shooter;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -26,6 +28,9 @@ public class ShooterGame implements ApplicationListener {
     private static final float WORLD_WIDTH = 16;
     private static final float WORLD_HEIGHT = 9;
     private static final int ENEMY_COUNT = 3;
+
+    private boolean hasAccelSensor = false;
+    private Vector3 accelVec = new Vector3();
 
     // Graphics related
     private AssetManager assets;
@@ -77,6 +82,8 @@ public class ShooterGame implements ApplicationListener {
             rightHelp = "Space to shoot";
         }
 
+        hasAccelSensor = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer);
+
         // Load all assets
         assets = new AssetManager();
         assets.load("8-bit-operator.fnt", BitmapFont.class);
@@ -105,6 +112,7 @@ public class ShooterGame implements ApplicationListener {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
+        // Reset state
         reset();
     }
 
@@ -114,11 +122,14 @@ public class ShooterGame implements ApplicationListener {
         score = 0;
         enemyGuys.clear();
         bullets.clear();
+        oldEntities.clear();
 
         // Create our player ship/character and input handler
         playerGuy = new ShootyGuy(this);
         playerGuy.setPos(1.5f, 1.5f);
 
+        // Add unpauser input processor as primary, which then unpauses the
+        // game if needed and passes all input through to the next processor
         InputMultiplexer input = new InputMultiplexer();
         input.addProcessor(new InputUnpauser(this));
         input.addProcessor(new ShootyGuyInput(gameViewport, playerGuy));
@@ -152,6 +163,7 @@ public class ShooterGame implements ApplicationListener {
         if (state == ShooterGame.State.Paused) {
             state = ShooterGame.State.Ongoing;
         } else if (state == ShooterGame.State.Ended && endWaitTimer > 1) {
+            // We wait a second to avoid accidental input from restarting the game
             reset();
         }
     }
@@ -183,36 +195,35 @@ public class ShooterGame implements ApplicationListener {
         }
         batch.end();
 
+        // Grab accel values for moving the HUD
+        if (hasAccelSensor) {
+            accelVec.set(-Gdx.input.getAccelerometerY(),
+                    -Gdx.input.getAccelerometerX(),
+                    0f);
+        }
+
         uiViewport.apply(true);
+        if (hasAccelSensor) {
+            // Shake HUD when phone moves
+            uiViewport.getCamera().translate(accelVec);
+            uiViewport.getCamera().update();
+        }
         batch.setProjectionMatrix(uiViewport.getCamera().combined);
 
         batch.begin();
         font.draw(batch, "Score: " + score, 5, uiViewport.getWorldHeight() - 5);
+        // Draw help if paused or game ended
         if (state != State.Ongoing) {
             font.draw(batch, leftHelp, 5, uiViewport.getWorldHeight() / 2);
             font.draw(batch, rightHelp, uiViewport.getWorldWidth() / 2 + 5, uiViewport.getWorldHeight() / 2);
         }
         batch.end();
-
-//        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-//        for (Bullet b : bullets) {
-//            Rectangle r = b.getRect();
-//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-//        }
-//        {
-//            Rectangle r = playerGuy.getRect();
-//            shapeRenderer.rect(r.x, r.y, r.width, r.getHeight());
-//        }
-//        for (EnemyGuy e : enemyGuys) {
-//            Rectangle r = e.getRect();
-//            shapeRenderer.rect(r.x, r.y, r.width, r.height);
-//        }
-//        shapeRenderer.end();
     }
 
     private void update() {
         if (state != State.Ongoing) {
             if (state == State.Ended) {
+                // Advance end timer
                 endWaitTimer += Gdx.graphics.getDeltaTime();
             }
             return;

@@ -63,20 +63,25 @@ final class EnemyGuy extends Entity {
 
         // Check if we've hit or gone past a wall, reverse if we have
 
-        if (x < 0 && speed.x < 0) {
+        if (x <= 0 && speed.x < 0) {
             speed.x *= -1;
         }
-        if ((x + w) > getGame().getWorldWidth() && speed.x > 0) {
+        if ((x + w) >= getGame().getWorldWidth() && speed.x > 0) {
             speed.x *= -1;
         }
-        if (y < 0 && speed.y < 0) {
+        if (y <= 0 && speed.y < 0) {
             speed.y *= -1;
         }
-        if ((y + h) > getGame().getWorldHeight() && speed.y > 0) {
+        if ((y + h) >= getGame().getWorldHeight() && speed.y > 0) {
             speed.y *= -1;
         }
 
-        moveX(deltaTime * speed.x);
-        moveY(deltaTime * speed.y);
+        float newX = x + deltaTime * speed.x;
+        float newY = y + deltaTime * speed.y;
+
+        newX = MathUtils.clamp(newX, 0, getGame().getWorldWidth() - w);
+        newY = MathUtils.clamp(newY, 0, getGame().getWorldHeight() - h);
+
+        getRect().setPosition(newX, newY);
     }
 }

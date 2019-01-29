@@ -147,8 +147,8 @@ public class ShooterGame implements ApplicationListener {
         // Pick random positions until we get one at least 4 units away from the player
         float x, y;
         do {
-            x = MathUtils.random(getWorldWidth() - 1.0f);
-            y = MathUtils.random(getWorldHeight() - 1.0f);
+            x = MathUtils.random(1f, getWorldWidth() - 1f);
+            y = MathUtils.random(1f, getWorldHeight() - 1f);
         } while (Vector2.dst2(x, y, playerGuy.getX(), playerGuy.getY()) < 16f);
 
         e.setPos(x, y);
@@ -265,12 +265,12 @@ public class ShooterGame implements ApplicationListener {
 
     private void checkCollisions() {
         for (EnemyGuy e : enemyGuys) {
-            if (playerGuy.collides(e)) {
+            if (!e.isDead() && !e.isGhost() && playerGuy.collides(e)) {
                 playerGuy.onCollision(e);
                 state = State.Ended;
             }
             for (Bullet b : bullets) {
-                if (e.collides(b)) {
+                if (!b.isDead() && !e.isDead() && !e.isGhost() && e.collides(b)) {
                     e.setDead(true);
                     b.setDead(true);
                     score += 1;

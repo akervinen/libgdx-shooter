@@ -16,6 +16,7 @@ final class EnemyGuy extends Entity {
     private Texture texture;
     private Sound deathSound;
 
+    private float ghostTimer = .75f;
     private boolean dead;
     private Vector2 speed;
 
@@ -37,6 +38,10 @@ final class EnemyGuy extends Entity {
         assets.load(DEATH_SOUND_FILE, Sound.class);
     }
 
+    public boolean isGhost() {
+        return ghostTimer > 0;
+    }
+
     public boolean isDead() {
         return dead;
     }
@@ -51,11 +56,22 @@ final class EnemyGuy extends Entity {
 
     @Override
     public void draw(SpriteBatch batch) {
+        if (ghostTimer > 0) {
+            batch.setColor(1f - ghostTimer, 1f - ghostTimer, 1, 1f - ghostTimer);
+        }
         batch.draw(texture, getRect().x, getRect().y, getRect().getWidth(), getRect().getHeight());
+        if (ghostTimer > 0) {
+            batch.setColor(1, 1, 1, 1f);
+        }
     }
 
     @Override
     public void update(float deltaTime) {
+        if (ghostTimer > 0) {
+            ghostTimer -= deltaTime;
+            return;
+        }
+
         float x = getRect().x;
         float y = getRect().y;
         float w = getRect().getWidth();

@@ -244,6 +244,7 @@ public class ShooterGame implements ApplicationListener {
         float delta = Gdx.graphics.getDeltaTime();
 
         playerGuy.update(delta);
+
         for (Bullet b : bullets) {
             if (b.isDead()) {
                 oldEntities.add(b);
@@ -251,10 +252,9 @@ public class ShooterGame implements ApplicationListener {
             }
             b.update(delta);
         }
-        for (Entity e : oldEntities) {
-            bullets.remove(e);
-        }
+        bullets.removeAll(oldEntities);
         oldEntities.clear();
+
         for (EnemyGuy e : enemyGuys) {
             if (e.isDead()) {
                 oldEntities.add(e);
@@ -262,10 +262,7 @@ public class ShooterGame implements ApplicationListener {
             }
             e.update(delta);
         }
-
-        for (Entity e : oldEntities) {
-            enemyGuys.remove(e);
-        }
+        enemyGuys.removeAll(oldEntities);
         oldEntities.clear();
 
         int enemyCount = START_ENEMY_COUNT + (score / 15);
